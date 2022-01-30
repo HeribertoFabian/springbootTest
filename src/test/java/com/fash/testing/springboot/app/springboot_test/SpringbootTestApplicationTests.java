@@ -12,6 +12,8 @@ import com.fash.testing.springboot.app.springboot_test.services.CuentaService;
 import com.fash.testing.springboot.app.springboot_test.services.CuentaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
@@ -19,15 +21,20 @@ import java.math.BigDecimal;
 @SpringBootTest
 class SpringbootTestApplicationTests {
 
+    @Mock
     CuentaRepositorio cuentaRepositorio;
+
+    @Mock
     BancoRepositorio bancoRepositorio;
-    CuentaService service;
+
+    @InjectMocks
+    CuentaServiceImpl service;
 
     @BeforeEach
     void setUp() {
-        cuentaRepositorio = mock(CuentaRepositorio.class);
-        bancoRepositorio = mock(BancoRepositorio.class);
-        service = new CuentaServiceImpl(cuentaRepositorio, bancoRepositorio);
+  //      cuentaRepositorio = mock(CuentaRepositorio.class);
+  //      bancoRepositorio = mock(BancoRepositorio.class);
+  //      service = new CuentaServiceImpl(cuentaRepositorio, bancoRepositorio);
 
  //       Datos.CUENTA_001.setSaldo(new BigDecimal("1000"));
  //       Datos.CUENTA_002.setSaldo(new BigDecimal("2000"));
