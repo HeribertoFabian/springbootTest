@@ -1,5 +1,6 @@
 package com.fash.testing.springboot.app.springboot_test.services;
 
+import com.fash.testing.springboot.app.springboot_test.exceptions.DineroInsuficienteException;
 import com.fash.testing.springboot.app.springboot_test.models.Banco;
 import com.fash.testing.springboot.app.springboot_test.models.Cuenta;
 import com.fash.testing.springboot.app.springboot_test.repository.BancoRepositorio;
@@ -22,7 +23,7 @@ public class CuentaServiceImpl implements CuentaService{
 
     @Override
     public Cuenta findById(Long id) {
-        return cuentaRepositorio.findById(id);
+        return cuentaRepositorio.findById(id).orElseThrow();
     }
 
     @Override
@@ -33,20 +34,20 @@ public class CuentaServiceImpl implements CuentaService{
 
     @Override
     public BigDecimal revisarSaldo(Long cuentaId) {
-        Cuenta cuenta = cuentaRepositorio.findById(cuentaId);
+        Cuenta cuenta = cuentaRepositorio.findById(cuentaId).orElseThrow();
         return cuenta.getSaldo();
     }
 
     @Override
     public void transferir(Long numCuentaOrigen, Long numCuentaDestino, BigDecimal monto, Long bancoId) {
 
-        Cuenta cuentaOrigen = cuentaRepositorio.findById(numCuentaOrigen);
+        Cuenta cuentaOrigen = cuentaRepositorio.findById(numCuentaOrigen).orElseThrow();
         cuentaOrigen.debito(monto);
-        cuentaRepositorio.update(cuentaOrigen);
+        cuentaRepositorio.save(cuentaOrigen);
 
-        Cuenta cuentaDestino = cuentaRepositorio.findById(numCuentaDestino);
+        Cuenta cuentaDestino = cuentaRepositorio.findById(numCuentaDestino).orElseThrow();
         cuentaDestino.credito(monto);
-        cuentaRepositorio.update(cuentaDestino);
+        cuentaRepositorio.save(cuentaDestino);
 
         Banco banco = bancoRepositorio.findById(bancoId);
         int totalTransferencias = banco.getTotalTransferencia();
