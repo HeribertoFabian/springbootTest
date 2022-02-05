@@ -41,7 +41,7 @@ public class IntegracionJPATest {
     }
 
     @Test
-    void testFindAll(){
+    void testFindAll() {
         List<Cuenta> cuentas = cuentaRepository.findAll();
         assertFalse(cuentas.isEmpty());
         assertEquals(2, cuentas.size());
@@ -61,6 +61,46 @@ public class IntegracionJPATest {
         //then
         assertEquals("3000", pepe.getSaldo().toPlainString());
         assertEquals("pepe", pepe.getPersona());
+    }
+
+    @Test
+    void testUpdate() {
+
+        //Given
+        Cuenta cuentaPepe = new Cuenta(null, "pepe", new BigDecimal("3000"));
+
+        //when
+        Cuenta pepe = cuentaRepository.save(cuentaPepe);
+
+        //then
+        assertEquals("3000", pepe.getSaldo().toPlainString());
+        assertEquals("pepe", pepe.getPersona());
+
+        //when
+        pepe.setSaldo(new BigDecimal("3800"));
+        Cuenta cuentaActualizada = cuentaRepository.save(pepe);
+
+        //then
+        assertEquals("3800", cuentaActualizada.getSaldo().toPlainString());
+        assertEquals("pepe", cuentaActualizada.getPersona());
+    }
+
+    @Test
+    void testDelete() {
+        //Given
+        Cuenta cuenta= cuentaRepository.findById(2L).orElseThrow();
+        assertEquals("John", cuenta.getPersona());
+
+        //When
+        cuentaRepository.delete(cuenta);
+
+        //then
+        assertThrows(NoSuchElementException.class, ()->{
+            //cuentaRepository.findByPersona("John").orElseThrow();
+            cuentaRepository.findById(2L).orElseThrow();
+        });
+
+        assertEquals(1, cuentaRepository.findAll().size());
 
     }
 }
