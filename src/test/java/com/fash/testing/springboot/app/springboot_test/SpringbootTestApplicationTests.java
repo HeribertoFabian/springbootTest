@@ -71,7 +71,7 @@ class SpringbootTestApplicationTests {
         verify(cuentaRepositorio, times(2)).save(any(Cuenta.class));
 
         verify(bancoRepositorio, times(2)).findById(1L);
-        verify(bancoRepositorio).update(any(Banco.class));
+        verify(bancoRepositorio).save(any(Banco.class));
 
         verify(cuentaRepositorio, times(6)).findById(anyLong());
         verify(cuentaRepositorio, never()).findAll();
@@ -108,7 +108,7 @@ class SpringbootTestApplicationTests {
         verify(cuentaRepositorio, never()).save(any(Cuenta.class));
 
         verify(bancoRepositorio).findById(1L);
-        verify(bancoRepositorio, never()).update(any(Banco.class));
+        verify(bancoRepositorio, never()).save(any(Banco.class));
         verify(cuentaRepositorio, never()).findAll();
 
         verify(cuentaRepositorio, times(5)).findById(anyLong());
