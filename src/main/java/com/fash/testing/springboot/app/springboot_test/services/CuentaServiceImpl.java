@@ -7,6 +7,7 @@ import com.fash.testing.springboot.app.springboot_test.repository.BancoRepositor
 import com.fash.testing.springboot.app.springboot_test.repository.CuentaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -22,23 +23,27 @@ public class CuentaServiceImpl implements CuentaService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Cuenta findById(Long id) {
         return cuentaRepositorio.findById(id).orElseThrow();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public int revisarTotalTransferencia(Long bancoId) {
         Banco banco = bancoRepositorio.findById(bancoId).orElseThrow();
         return banco.getTotalTransferencia();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal revisarSaldo(Long cuentaId) {
         Cuenta cuenta = cuentaRepositorio.findById(cuentaId).orElseThrow();
         return cuenta.getSaldo();
     }
 
     @Override
+    @Transactional
     public void transferir(Long numCuentaOrigen, Long numCuentaDestino, BigDecimal monto, Long bancoId) {
 
         Cuenta cuentaOrigen = cuentaRepositorio.findById(numCuentaOrigen).orElseThrow();
