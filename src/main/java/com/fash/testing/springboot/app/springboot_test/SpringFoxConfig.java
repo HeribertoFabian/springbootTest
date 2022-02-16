@@ -15,6 +15,6 @@ public class SpringFoxConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.fash.testing.springboot.app.springboot_test.controllers"))
-                .paths(PathSelectors.ant("/api/cuentas/*")).build();
+                .paths(PathSelectors.any()).build();
     }
 }

@@ -19,6 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootTest
 class SpringbootTestApplicationTests {
@@ -128,6 +130,45 @@ class SpringbootTestApplicationTests {
         assertEquals("Andres", cuenta2.getPersona());
 
         verify(cuentaRepositorio, times(2)).findById(anyLong());
+
+    }
+
+    @Test
+    void testFindAll() {
+        //Given
+        List<Cuenta> datos = Arrays.asList(Datos.crearCuenta001().orElseThrow(), Datos.crearCuenta002().orElseThrow());
+        when(cuentaRepositorio.findAll()).thenReturn(datos);
+
+        //when
+        List<Cuenta> cuentas = service.findAll();
+
+        //Then
+        assertFalse(cuentas.isEmpty());
+        assertEquals(2, cuentas.size() );
+        assertTrue(cuentas.contains(Datos.crearCuenta002().orElseThrow()));
+
+        verify(cuentaRepositorio).findAll();
+    }
+
+    @Test
+    void testSave() {
+        //Given
+        Cuenta cuentapepe = new Cuenta(null, "pepe", new BigDecimal("3000"));
+        when(cuentaRepositorio.save(any())).then(invocation -> {
+            Cuenta c = invocation.getArgument(0);
+            c.setId(3L);
+            return c;
+        });
+
+        //When
+        Cuenta cuenta = service.save(cuentapepe);
+
+        //Then
+        assertEquals("pepe", cuenta);
+        assertEquals(3L, cuenta.getId());
+        assertEquals("3000", cuenta.getSaldo().toPlainString());
+
+        verify(cuentaRepositorio.save(any()));
 
     }
 }

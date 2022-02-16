@@ -3,8 +3,14 @@ package com.fash.testing.springboot.app.springboot_test.services;
 import com.fash.testing.springboot.app.springboot_test.models.Cuenta;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface CuentaService {
+
+    List<Cuenta> findAll();
+
+    Cuenta save(Cuenta cuenta);
+
     Cuenta findById(Long id);
 
     int revisarTotalTransferencia(Long bancoId);
