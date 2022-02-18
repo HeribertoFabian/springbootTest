@@ -11,6 +11,8 @@ public interface CuentaService {
 
     Cuenta save(Cuenta cuenta);
 
+    void deleteById(Long id);
+
     Cuenta findById(Long id);
 
     int revisarTotalTransferencia(Long bancoId);

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/cuentas")
@@ -34,9 +35,15 @@ public class CuentaController {
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(OK)
-    public Cuenta detalle(@PathVariable Long id) {
-        return cuentaService.findById(id);
+    public ResponseEntity<?> detalle(@PathVariable Long id) {
+
+        Cuenta c = null;
+        try{
+            c = cuentaService.findById(id);
+        }catch(NoSuchElementException ex){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(c);
     }
 
     @PostMapping("/transferir")
@@ -54,5 +61,13 @@ public class CuentaController {
         return new ResponseEntity<>(response, OK);
 
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void eliminar( @PathVariable Long id){
+        cuentaService.deleteById(id);
+    }
+
+
 
 }
