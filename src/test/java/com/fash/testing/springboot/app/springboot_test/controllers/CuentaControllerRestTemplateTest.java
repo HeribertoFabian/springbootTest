@@ -1,6 +1,8 @@
 package com.fash.testing.springboot.app.springboot_test.controllers;
 
 import com.fash.testing.springboot.app.springboot_test.models.TransaccionDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -33,7 +38,7 @@ class CuentaControllerRestTemplateTest {
 
     @Order(1)
     @Test
-    void testTransferir() {
+    void testTransferir() throws JsonProcessingException {
         //Given
         TransaccionDTO dto = new TransaccionDTO();
         dto.setMonto(new BigDecimal("100"));
@@ -43,7 +48,7 @@ class CuentaControllerRestTemplateTest {
 
         //When
         ResponseEntity<String> response = client.
-                postForEntity("http://localhost:"+puerto+"/api/cuentas/transferir", dto, String.class);
+                postForEntity(crearUri()+"/api/cuentas/transferir", dto, String.class);
                 //postForEntity("/api/cuentas/transferir", dto, String.class);
 
         String json = response.getBody();
@@ -53,5 +58,25 @@ class CuentaControllerRestTemplateTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(MediaType.APPLICATION_JSON, response.getHeaders().getContentType());
 
+        JsonNode jsonNode = mapper.readTree(json);
+        assertEquals("Transferencia realizada con exito", jsonNode.path("mensaje").asText());
+        assertEquals(LocalDate.now().toString(), jsonNode.path("date").asText());
+        assertEquals("100", jsonNode.path("transaccion").path("monto").asText());
+
+        //Comparamos el json completo
+        Map<String, Object> response2 = new HashMap<>();
+        response2.put("date", LocalDate.now().toString());
+        response2.put("status", "OK");
+        response2.put("mensaje", "Transferencia realizada con exito");
+        response2.put("transaccion", dto);
+
+        assertEquals(mapper.writeValueAsString(response2), json);
+    }
+
+
+
+    private String crearUri()
+    {
+        return "http://localhost:"+puerto;
     }
 }
