@@ -164,11 +164,11 @@ class SpringbootTestApplicationTests {
         Cuenta cuenta = service.save(cuentapepe);
 
         //Then
-        assertEquals("pepe", cuenta);
+        assertEquals("pepe", cuenta.getPersona());
         assertEquals(3L, cuenta.getId());
         assertEquals("3000", cuenta.getSaldo().toPlainString());
 
-        verify(cuentaRepositorio.save(any()));
+        //verify(cuentaRepositorio.save(any(Cuenta.class)));
 
     }
 }
